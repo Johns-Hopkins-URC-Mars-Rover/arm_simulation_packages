@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<robot name="arm_jr">
+
+  <material name="silver">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+  
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Joint 1 -->
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0.07 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14158" upper="3.14158" effort="50" velocity="1.0"/>
+    <dynamics damping="0.5"/>
+  </joint>
+
+  <link name="link1">
+    <visual>
+      <origin xyz="0 -0.07 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/first-bracket-motor_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.07 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/first-bracket-motor_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+
+  <!-- Joint 2 -->
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0 0.055" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-3.14158" upper="3.14158" effort="10" velocity="1.0"/>
+    <dynamics damping="0.5"/>
+  </joint>
+
+  <link name="link2">
+    <visual>
+      <origin xyz="0 -0.07 -0.055" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/shoulder-to-elbow-motor_v1_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.07 -0.055" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/shoulder-to-elbow-motor_v1_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+
+  <!-- Joint 3 -->
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0.0 0.0135 0.108" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-3.14158" upper="3.14158" effort="10" velocity="1.0"/>
+    <dynamics damping="0.5"/>
+  </joint>
+
+  <link name="link3">
+    <visual>
+      <origin xyz="-0.0138 -0.0075 -0.0141" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/elbow_to_wrist_with_motor.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.0138 -0.0075 -0.0141" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/elbow_to_wrist_with_motor.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+
+  <!-- Joint 4 -->
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="0 0.091 0.0035" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-3.14158" upper="3.14158" effort="10" velocity="1.0"/>
+    <dynamics damping="0.5"/>
+  </joint>
+
+  <link name="link4">
+    <visual>
+      <origin xyz="0 -0.084 -0.163" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/elbow-to-wrist-motor-reference_v1_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.084 -0.163" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/elbow-to-wrist-motor-reference_v1_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.3"/>
+      <inertia ixx="0.003" ixy="0" ixz="0" iyy="0.003" iyz="0" izz="0.003"/>
+    </inertial>
+  </link>
+
+  <!-- Joint 5 -->
+  <joint name="joint5" type="revolute">
+    <parent link="link4"/>
+    <child link="link5"/>
+    <origin xyz="0 0.04 0" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-3.14158" upper="3.14158" effort="10" velocity="1.0"/>
+    <dynamics damping="0.5"/>
+  </joint>
+
+  <link name="link5">
+    <!-- First gripper mesh -->
+    <visual name="gripper_pt1">
+      <origin xyz="0 -0.125 -0.163" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/gripper-static-motor-pt1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <!-- Second gripper mesh (visual only in MuJoCo) -->
+    <visual name="gripper_pt2">
+      <origin xyz="0 -0.125 -0.163" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/gripper-static-motor-pt2.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.125 -0.163" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/gripper-static-motor-pt1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.21"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+
+  <!-- Joint 6 (Gripper) -->
+  <joint name="joint6" type="revolute">
+    <parent link="link5"/>
+    <child link="link6"/>
+    <origin xyz="-0.009 0.0165 0" rpy="0 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-2.45" upper="0.032" effort="10" velocity="1.0"/>
+    <dynamics damping="0.5"/>
+  </joint>
+
+  <link name="link6">
+    <!-- Moving gripper mesh (visual only in MuJoCo) -->
+    <visual name="gripper_moving">
+      <origin xyz="0.009 -0.1415 -0.163" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/gripper-moving-part-dumb_v2_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.009 -0.1415 -0.163" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cmake_arm_urdf/meshes/gripper-moving-part-dumb_v2_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+</robot>
