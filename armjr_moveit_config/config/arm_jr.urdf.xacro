@@ -3,7 +3,7 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
     <!-- Import arm_jr urdf file -->
-    <xacro:include filename="$(find cmake_arm_urdf)/urdf/arm_jr.urdf" />
+    <xacro:include filename="$(find test_urdf)/urdf/arm_jr.urdf" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="arm_jr.ros2_control.xacro" />

@@ -1,12 +1,3 @@
-from moveit_configs_utils import MoveItConfigsBuilder
-from moveit_configs_utils.launches import generate_demo_launch
-
-
-def generate_launch_description():
-    moveit_config = MoveItConfigsBuilder("arm_jr", package_name="armjr_moveit_config").to_moveit_configs()
-    return generate_demo_launch(moveit_config)
-
-"""
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
@@ -17,8 +8,17 @@ from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
 from launch_ros.parameter_descriptions import ParameterFile
 from launch import conditions
+import yaml
 
-
+def load_yaml(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+    try:
+        with open(absolute_file_path, 'r') as file:
+            return yaml.safe_load(file)
+    except Exception as e:
+        print(f"Warning: Could not load {file_path}: {e}")
+        return {}
 
 def generate_launch_description():
 
@@ -30,11 +30,9 @@ def generate_launch_description():
         "dof": "5",
     }
 
-    kinematics_file = os.path.join(
-        get_package_share_directory("armjr_moveit_config"),
-        "config",
-        "kinematics.yaml",
-    )
+    # Manually load kinematics.yaml to avoid parameter parsing issues
+    kinematics_yaml = load_yaml("armjr_moveit_config", "config/kinematics.yaml")
+    print(f"Loaded kinematics config: {kinematics_yaml}")
     
     # Load the robot configuration
     moveit_config = (
@@ -47,22 +45,30 @@ def generate_launch_description():
             publish_robot_description=True, publish_robot_description_semantic=True
         )
         .planning_pipelines(
-            pipelines=["ompl", "stomp", "pilz_industrial_motion_planner"]
+            pipelines=["ompl"]  # Simplified: removed problematic planners
         )
         .to_moveit_configs()
     )
 
-    # Start the actual move_group node/action server
+    # Start the actual move_group node/action server - FIXED PARAMETER ORDER
     run_move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
         output="screen",
-        parameters=[moveit_config.to_dict(),
-        	ParameterFile(kinematics_file, allow_substs=True)],
+        parameters=[
+            moveit_config.robot_description,
+            moveit_config.robot_description_semantic,
+            #moveit_config.kinematics_yaml,   #Use manually loaded YAML instead of ParameterFile
+            moveit_config.joint_limits,
+            moveit_config.planning_pipelines,
+            {"publish_robot_description_semantic": True},
+            {"allow_trajectory_execution": True},
+            {"moveit_manage_controllers": True},
+            {"robot_description_kinematics": kinematics_yaml},
+        ],
     )
 
     # RViz for visualization
-    # Get the path to the RViz configuration file
     rviz_config_arg = DeclareLaunchArgument(
         "rviz_config",
         default_value="moveit.rviz",
@@ -83,8 +89,6 @@ def generate_launch_description():
             moveit_config.robot_description,
             moveit_config.robot_description_semantic,
             moveit_config.robot_description_kinematics,
-            moveit_config.planning_pipelines,
-            moveit_config.joint_limits,
         ],
     )
 
@@ -144,17 +148,14 @@ def generate_launch_description():
         arguments=["hand_controller", "-c", "/controller_manager"],
     )
 
-    return LaunchDescription(
-        [
-            rviz_config_arg,
-            rviz_node,
-            static_tf,
-            robot_state_publisher,
-            run_move_group_node,
-            ros2_control_node,
-            joint_state_broadcaster_spawner,
-            arm_controller_spawner,
-            hand_controller_spawner,
-        ]
-    )
-    """
+    return LaunchDescription([
+        rviz_config_arg,
+        static_tf,
+        robot_state_publisher,
+        run_move_group_node,
+        ros2_control_node,
+        joint_state_broadcaster_spawner,
+        arm_controller_spawner,
+        hand_controller_spawner,
+        rviz_node,
+    ])
