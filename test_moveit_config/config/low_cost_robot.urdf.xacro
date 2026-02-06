@@ -3,7 +3,7 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
     <!-- Import low_cost_robot urdf file -->
-    <xacro:include filename="$(find test_urdf)/urdf/low_cost_robot.urdf" />
+    <xacro:include filename="$(find cmake_arm_urdf)/urdf/low_cost_robot.urdf" />
 
     <!-- Import control_xacro -->
     <xacro:include filename="low_cost_robot.ros2_control.xacro" />

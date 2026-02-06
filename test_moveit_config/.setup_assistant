@@ -1,6 +1,6 @@
 moveit_setup_assistant_config:
   urdf:
-    package: test_urdf
+    package: cmake_arm_urdf
     relative_path: urdf/low_cost_robot.urdf
   srdf:
     relative_path: config/low_cost_robot.srdf

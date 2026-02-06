@@ -1,6 +1,6 @@
 moveit_setup_assistant_config:
   urdf:
-    package: test_urdf
+    package: cmake_arm_urdf
     relative_path: urdf/arm_jr.urdf
   srdf:
     relative_path: config/arm_jr.srdf
