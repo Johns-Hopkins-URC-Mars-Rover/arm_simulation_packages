@@ -13,7 +13,7 @@ int main(int argc, char * argv[])
   );
 
   auto const logger = rclcpp::get_logger("arm_jr_commander");
-
+  
   using moveit::planning_interface::MoveGroupInterface;
   auto move_group_interface = MoveGroupInterface(node, "arm");
 

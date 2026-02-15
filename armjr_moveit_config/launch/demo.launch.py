@@ -1,10 +1,31 @@
+from launch import LaunchDescription
+from launch_ros.actions import Node
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_demo_launch
 
-
 def generate_launch_description():
     moveit_config = MoveItConfigsBuilder("arm_jr", package_name="armjr_moveit_config").to_moveit_configs()
-    return generate_demo_launch(moveit_config)
+
+    # Create a LaunchDescription manually
+    ld = LaunchDescription()
+
+    # Add demo launch nodes
+    demo_launch = generate_demo_launch(moveit_config)
+    if demo_launch is not None:
+        for action in demo_launch.entities:   # all nodes/actions in the demo
+            ld.add_action(action)
+
+    
+    commander_node = Node(
+        package="cpp_armjr_moveit",       
+        executable="cpp_armjr_moveit",   
+        output="screen",
+        parameters=[moveit_config.to_dict()],
+    )
+    ld.add_action(commander_node)
+
+    return ld
+
 
 """
 import os
