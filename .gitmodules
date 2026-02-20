@@ -1,0 +1,3 @@
+[submodule "hd/dynamixel_hardware"]
+	path = hd/dynamixel_hardware
+	url = https://github.com/dynamixel-community/dynamixel_hardware.git
