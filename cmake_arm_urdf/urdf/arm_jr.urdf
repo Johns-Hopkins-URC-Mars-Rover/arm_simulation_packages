@@ -140,7 +140,7 @@
   </link>
 
   <!-- Joint 5 -->
-  <joint name="joint5" type="revolute">
+  <joint name="joint5" type="fixed">
     <parent link="link4"/>
     <child link="link5"/>
     <origin xyz="0 0.04 0" rpy="0 0 0"/>

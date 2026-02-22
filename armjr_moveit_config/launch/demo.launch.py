@@ -16,13 +16,13 @@ def generate_launch_description():
             ld.add_action(action)
 
     
-    commander_node = Node(
-        package="cpp_armjr_moveit",       
-        executable="cpp_armjr_moveit",   
-        output="screen",
-        parameters=[moveit_config.to_dict()],
-    )
-    ld.add_action(commander_node)
+    # commander_node = Node(
+    #     package="cpp_armjr_moveit",       
+    #     executable="cpp_armjr_moveit",   
+    #     output="screen",
+    #     parameters=[moveit_config.to_dict()],
+    # )
+    # ld.add_action(commander_node)
 
     return ld
 
