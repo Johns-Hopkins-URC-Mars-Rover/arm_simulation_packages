@@ -27,8 +27,12 @@ joint_trajectory_controller:
       - joint2
       - joint3
       - joint4
+<<<<<<< HEAD
       - joint6
 
+=======
+      #- joint5
+>>>>>>> move_armjr
     command_interfaces:
       - position
     allow_partial_joints_goal: true

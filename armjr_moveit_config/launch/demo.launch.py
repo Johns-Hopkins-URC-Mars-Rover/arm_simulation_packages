@@ -1,31 +1,87 @@
+"""
+import os
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from moveit_configs_utils import MoveItConfigsBuilder
+import xacro
+
+def generate_launch_description():
+    # 1. Load the URDF/SRDF and other configs
+    moveit_config = (
+        MoveItConfigsBuilder("arm_jr", package_name="armjr_moveit_config")
+        .robot_description(file_path="config/arm_jr.urdf.xacro")
+        .to_moveit_configs()
+    )
+
+    # 2. Extract the URDF string (This is the magic step from your working file)
+    robot_description_config = xacro.process_file(
+        os.path.join(get_package_share_directory("armjr_moveit_config"), "config", "arm_jr.urdf.xacro")
+    )
+    robot_description_xml = robot_description_config.toxml()
+
+    # 3. Define the Control Node (Mimicking your working file)
+    ros2_control_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[
+            {"robot_description": robot_description_xml},
+            os.path.join(get_package_share_directory("armjr_moveit_config"), "config", "ros2_controllers.yaml"),
+        ],
+        output="screen",
+    )
+
+    # 4. Spawners (Change names to match your YAML)
+    jsb_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+    )
+
+    arm_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["arm_controller", "--controller-manager", "/controller_manager"],
+    )
+
+    # 5. MoveGroup (The MoveIt Brain)
+    run_move_group_node = Node(
+        package="moveit_ros_move_group",
+        executable="move_group",
+        output="screen",
+        parameters=[moveit_config.to_dict()],
+    )
+
+    # 6. RViz
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        arguments=["-d", os.path.join(get_package_share_directory("armjr_moveit_config"), "config", "moveit.rviz")],
+        parameters=[
+            moveit_config.robot_description,
+            moveit_config.robot_description_semantic,
+            moveit_config.robot_description_kinematics,
+        ],
+    )
+
+    return LaunchDescription([
+        ros2_control_node,
+        jsb_spawner,
+        arm_spawner,
+        run_move_group_node,
+        rviz_node,
+        # Add robot_state_publisher node here if needed
+    ])
+"""
+
+
+
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_demo_launch
 
 def generate_launch_description():
     moveit_config = MoveItConfigsBuilder("arm_jr", package_name="armjr_moveit_config").to_moveit_configs()
-
-    # Create a LaunchDescription manually
-    ld = LaunchDescription()
-
-    # Add demo launch nodes
-    demo_launch = generate_demo_launch(moveit_config)
-    if demo_launch is not None:
-        for action in demo_launch.entities:   # all nodes/actions in the demo
-            ld.add_action(action)
-
-    
-    # commander_node = Node(
-    #     package="cpp_armjr_moveit",       
-    #     executable="cpp_armjr_moveit",   
-    #     output="screen",
-    #     parameters=[moveit_config.to_dict()],
-    # )
-    # ld.add_action(commander_node)
-
-    return ld
-
+    return generate_demo_launch(moveit_config)
 
 """
 import os
