@@ -43,7 +43,6 @@
                 </state_interface>
                 <state_interface name="velocity"/>
             </joint>
-            <!--
             <joint name="joint5">
             	<param name="id">5</param>
                 <command_interface name="position"/>
@@ -52,7 +51,6 @@
                 </state_interface>
                 <state_interface name="velocity"/>
             </joint>
-            -->
             <joint name="joint6">
             	<param name="id">6</param>
                 <command_interface name="position"/>
