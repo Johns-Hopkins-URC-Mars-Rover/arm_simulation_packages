@@ -9,11 +9,13 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 add_executable(cpp_armjr_moveit src/cpp_armjr_moveit.cpp)
 target_include_directories(cpp_armjr_moveit PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
+  
 target_compile_features(cpp_armjr_moveit PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 ament_target_dependencies(
   cpp_armjr_moveit
@@ -21,7 +23,18 @@ ament_target_dependencies(
   "rclcpp"
 )
 
-install(TARGETS cpp_armjr_moveit
+add_executable(arm_sub src/arm_sub.cpp)
+target_compile_features(arm_sub PUBLIC cxx_std_17)
+ament_target_dependencies(arm_sub
+  "moveit_ros_planning_interface"
+  "rclcpp"
+  "geometry_msgs"
+)
+
+
+install(TARGETS 
+  cpp_armjr_moveit
+  arm_sub
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
